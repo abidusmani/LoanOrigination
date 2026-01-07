@@ -1,7 +1,4 @@
-"""
-Database Configuration
-SQLAlchemy setup and session management
-"""
+ 
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -26,10 +23,6 @@ Base = declarative_base()
 
 
 def get_db() -> Generator[Session, None, None]:
-    """
-    Dependency to get database session
-    Yields a session and ensures it's closed after use
-    """
     db = SessionLocal()
     try:
         yield db
@@ -38,7 +31,6 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def init_db() -> None:
-    """Initialize database tables"""
     # Import all models here to ensure they're registered
     from app.models import user, application  # noqa
     Base.metadata.create_all(bind=engine)

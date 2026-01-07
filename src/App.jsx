@@ -9,10 +9,8 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        {/* Public route - Login/Register */}
         <Route path="/login" element={<AuthPage />} />
         
-        {/* Protected route - Application Page (requires login, user role only) */}
         <Route 
           path="/" 
           element={
@@ -22,7 +20,6 @@ export default function App() {
           } 
         />
         
-        {/* Protected route - Admin Dashboard (requires admin role) */}
         <Route 
           path="/admin" 
           element={
@@ -32,7 +29,6 @@ export default function App() {
           } 
         />
         
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

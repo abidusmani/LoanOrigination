@@ -1,7 +1,4 @@
-"""
-Application Configuration
-Loads settings from environment variables
-"""
+ 
 
 from pydantic_settings import BaseSettings
 from typing import List
@@ -9,10 +6,9 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    """Application settings loaded from environment variables"""
     
     # Database
-    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/loan_os_db"
+    DATABASE_URL: str = "postgresql://postgres:Password@localhost:5432/loan_os_db"
     
     # JWT Authentication
     SECRET_KEY: str = "los-secret-key-for-development-only"
@@ -37,7 +33,6 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    """Get cached settings instance"""
     return Settings()
 
 

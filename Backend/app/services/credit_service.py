@@ -1,7 +1,4 @@
-"""
-Credit Bureau Service
-Handles credit check with rule-based mock CIBIL implementation
-"""
+ 
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
@@ -14,46 +11,16 @@ from app.core.constants import LoanConfig, WorkflowState
 
 
 class CreditBureauServiceInterface(ABC):
-    """Abstract Credit Bureau Service Interface"""
     
     @abstractmethod
     async def get_credit_report(self, pan: str, monthly_income: float = 0, db: Optional[Session] = None, current_application_id: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Get credit report for an applicant
         
-        Args:
-            pan: PAN number
-            monthly_income: Monthly income (optional, for score adjustment)
-            db: Database session (optional, for counting real active loans)
-            current_application_id: Current application ID to exclude from count
-            
-        Returns:
-            Credit report result
-        """
         pass
 
 
 class MockCibilService(CreditBureauServiceInterface):
-    """
-    Mock CIBIL Service Implementation
-    Uses rule-based logic for credit check
-    
-    Rules:
-    - Credit score < 650 → CREDIT_REJECTED
-    - Active loans > 5 → CREDIT_REJECTED
-    """
     
     def _calculate_credit_score(self, pan: str, monthly_income: float = 0) -> int:
-        """
-        Calculate credit score based on PAN pattern and income
-        
-        Args:
-            pan: PAN number
-            monthly_income: Monthly income
-            
-        Returns:
-            Credit score (300-900)
-        """
         base_score = 700
         
         # Rule 1: PAN first letter affects base score

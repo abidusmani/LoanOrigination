@@ -1,16 +1,4 @@
-"""
-Mini Loan Origination System (LOS) - FastAPI Backend
-
-A comprehensive loan origination system that handles:
-- Customer onboarding
-- KYC verification
-- Credit bureau check (CIBIL)
-- Loan eligibility decisioning
-
-Workflow States:
-DRAFT → KYC_PENDING → KYC_COMPLETED → CREDIT_CHECK_PENDING → 
-CREDIT_CHECK_COMPLETED → ELIGIBLE / NOT_ELIGIBLE
-"""
+ 
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,10 +14,7 @@ from app.core.security import get_password_hash
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Application lifespan handler
-    Initializes database and creates default admin user on startup
-    """
+    
     # Startup
     print("🚀 Starting Loan Origination System...")
     

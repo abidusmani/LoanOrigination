@@ -1,7 +1,4 @@
-"""
-Authentication Routes
-Handles user login, registration, and token management
-"""
+ 
 
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status

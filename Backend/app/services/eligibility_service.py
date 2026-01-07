@@ -1,7 +1,4 @@
-"""
-Eligibility Engine Service
-Calculates loan eligibility based on income, employment type, and credit score
-"""
+ 
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any
@@ -11,7 +8,6 @@ from app.core.constants import LoanConfig, EmploymentType
 
 
 class EligibilityEngineInterface(ABC):
-    """Abstract Eligibility Engine Interface"""
     
     @abstractmethod
     async def calculate(
@@ -41,20 +37,6 @@ class EligibilityEngineInterface(ABC):
 
 
 class EligibilityEngine(EligibilityEngineInterface):
-    """
-    Eligibility Engine Implementation
-    
-    Calculates loan eligibility based on:
-    - CIBIL Score
-    - Income
-    - Employment Type
-    
-    Rules:
-    - Salaried: Max EMI = 50% of income
-    - Self-Employed: Max EMI = 40% of income
-    - Interest Rate: 12% (static)
-    - Tenure: 36 months
-    """
     
     def _calculate_emi(self, principal: float, annual_rate: float, tenure_months: int) -> float:
         """

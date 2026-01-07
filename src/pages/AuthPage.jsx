@@ -20,10 +20,8 @@ export default function AuthPage() {
   });
   const [formErrors, setFormErrors] = useState({});
 
-  // Redirect if already authenticated - always based on role
   useEffect(() => {
     if (isAuthenticated && user) {
-      // Always redirect based on user role, not previous location
       if (user.role === 'admin') {
         navigate('/admin', { replace: true });
       } else {
@@ -32,7 +30,6 @@ export default function AuthPage() {
     }
   }, [isAuthenticated, navigate, user]);
 
-  // Clear errors when switching modes
   useEffect(() => {
     clearError();
     setFormErrors({});
@@ -42,7 +39,6 @@ export default function AuthPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear field error when typing
     if (formErrors[name]) {
       setFormErrors(prev => ({ ...prev, [name]: null }));
     }
@@ -51,21 +47,18 @@ export default function AuthPage() {
   const validateForm = () => {
     const errors = {};
     
-    // Email validation
     if (!formData.email) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'Invalid email format';
     }
     
-    // Password validation
     if (!formData.password) {
       errors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       errors.password = 'Password must be at least 6 characters';
     }
     
-    // Register-specific validations
     if (!isLoginMode) {
       if (!formData.fullName) {
         errors.fullName = 'Full name is required';
@@ -93,8 +86,7 @@ export default function AuthPage() {
     }
     
     if (success && isLoginMode) {
-      // Role-based redirect is handled by the useEffect above
-      // The useEffect will trigger after state updates
+      // Redirect handled by useEffect
     } else if (success && !isLoginMode) {
       // After registration, switch to login mode
       setIsLoginMode(true);
@@ -105,7 +97,7 @@ export default function AuthPage() {
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
     setFormData({
-      email: formData.email, // Keep email
+      email: formData.email,
       password: '',
       confirmPassword: '',
       fullName: '',
@@ -230,9 +222,7 @@ export default function AuthPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-6">
-          © 2026 LoanOS. All rights reserved.
-        </p>
+        
       </div>
     </div>
   );

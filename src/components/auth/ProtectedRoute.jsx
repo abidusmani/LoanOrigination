@@ -2,15 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import LoadingSpinner from '../common/LoadingSpinner';
-
-/**
- * ProtectedRoute Component
- * Protects routes based on authentication and role requirements
- * 
- * @param {React.ReactNode} children - Child components to render if authorized
- * @param {string} requiredRole - Optional role requirement ('admin' or 'user')
- * @param {boolean} userOnly - If true, only non-admin users can access (admins redirected to /admin)
- */
 export default function ProtectedRoute({ children, requiredRole = null, userOnly = false }) {
   const location = useLocation();
   const { isAuthenticated, user, checkAuth } = useAuthStore();
@@ -24,7 +15,6 @@ export default function ProtectedRoute({ children, requiredRole = null, userOnly
     verifyAuth();
   }, []);
 
-  // Show loading while checking authentication
   if (isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -33,19 +23,15 @@ export default function ProtectedRoute({ children, requiredRole = null, userOnly
     );
   }
 
-  // Not authenticated - redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If userOnly and user is admin, redirect to admin dashboard
   if (userOnly && user?.role === 'admin') {
     return <Navigate to="/admin" replace />;
   }
 
-  // Check role requirement
   if (requiredRole && user?.role !== requiredRole) {
-    // User doesn't have required role
     if (requiredRole === 'admin') {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -71,6 +57,5 @@ export default function ProtectedRoute({ children, requiredRole = null, userOnly
     }
   }
 
-  // Authorized - render children
   return children;
 }

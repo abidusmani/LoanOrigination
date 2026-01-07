@@ -33,14 +33,12 @@ export default function ApplicationPage() {
     navigate('/login');
   };
 
-  // Initialize application on mount if none exists
   useEffect(() => {
     if (!currentApplication) {
       initializeApplication();
     }
   }, []);
 
-  // Update active step based on application status
   useEffect(() => {
     if (!currentApplication) return;
     

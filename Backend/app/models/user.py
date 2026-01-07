@@ -1,7 +1,4 @@
-"""
-User Model
-Database model for user/admin accounts
-"""
+ 
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
@@ -9,7 +6,6 @@ from app.db.database import Base
 
 
 class User(Base):
-    """User model for authentication"""
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -1,7 +1,4 @@
-"""
-Application Model
-Database model for loan applications
-"""
+ 
 
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, JSON, Enum
 from sqlalchemy.sql import func
@@ -10,7 +7,6 @@ from app.core.constants import WorkflowState, EmploymentType
 
 
 class Application(Base):
-    """Loan application model"""
     __tablename__ = "applications"
 
     id = Column(Integer, primary_key=True, index=True)

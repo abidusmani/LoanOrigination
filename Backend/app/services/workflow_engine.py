@@ -1,7 +1,4 @@
-"""
-Workflow Engine Service
-Manages application state transitions
-"""
+ 
 
 from typing import Optional
 from datetime import datetime
@@ -17,16 +14,6 @@ class WorkflowError(Exception):
 
 
 class WorkflowEngine:
-    """
-    Workflow Engine
-    Manages state transitions for loan applications
-    
-    States:
-    DRAFT → KYC_PENDING → KYC_COMPLETED → CREDIT_CHECK_PENDING → 
-    CREDIT_CHECK_COMPLETED → ELIGIBLE / NOT_ELIGIBLE
-    
-    Terminal States: KYC_FAILED, CREDIT_REJECTED, ELIGIBLE, NOT_ELIGIBLE
-    """
     
     def can_transition(self, current_state: WorkflowState, target_state: WorkflowState) -> bool:
         """
