@@ -18,37 +18,8 @@ A FastAPI-based backend for the Mini Loan Origination System (LOS).
 - **Authentication**: JWT tokens
 - **Validation**: Pydantic
 
-## Project Structure
 
-```
-Backend/
-├── main.py                 # Application entry point
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables
-├── app/
-│   ├── core/
-│   │   ├── config.py       # Application settings
-│   │   ├── constants.py    # Workflow states & enums
-│   │   └── security.py     # JWT & password handling
-│   ├── db/
-│   │   └── database.py     # Database configuration
-│   ├── models/
-│   │   ├── user.py         # User model
-│   │   └── application.py  # Application model
-│   ├── schemas/
-│   │   ├── user.py         # User Pydantic schemas
-│   │   └── application.py  # Application Pydantic schemas
-│   ├── services/
-│   │   ├── base.py         # Base service interface
-│   │   ├── kyc_service.py  # KYC verification service
-│   │   ├── credit_service.py # Credit bureau service
-│   │   ├── eligibility_service.py # Eligibility engine
-│   │   └── workflow_engine.py # Workflow state machine
-│   └── routes/
-│       ├── auth.py         # Authentication endpoints
-│       ├── applications.py # Application endpoints
-│       └── admin.py        # Admin endpoints
-```
+
 
 ## Setup
 

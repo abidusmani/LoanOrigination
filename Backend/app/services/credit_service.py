@@ -4,24 +4,28 @@ Handles credit check with rule-based mock CIBIL implementation
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from datetime import datetime
 import uuid
 
-from app.core.constants import LoanConfig
+from sqlalchemy.orm import Session
+
+from app.core.constants import LoanConfig, WorkflowState
 
 
 class CreditBureauServiceInterface(ABC):
     """Abstract Credit Bureau Service Interface"""
     
     @abstractmethod
-    async def get_credit_report(self, pan: str, monthly_income: float = 0) -> Dict[str, Any]:
+    async def get_credit_report(self, pan: str, monthly_income: float = 0, db: Optional[Session] = None, current_application_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Get credit report for an applicant
         
         Args:
             pan: PAN number
             monthly_income: Monthly income (optional, for score adjustment)
+            db: Database session (optional, for counting real active loans)
+            current_application_id: Current application ID to exclude from count
             
         Returns:
             Credit report result
@@ -86,28 +90,35 @@ class MockCibilService(CreditBureauServiceInterface):
         
         return max(300, min(900, base_score))
     
-    def _calculate_active_loans(self, pan: str) -> int:
+    def _count_active_loans_from_db(self, pan: str, db: Optional[Session], current_application_id: Optional[str] = None) -> int:
         """
-        Calculate number of active loans based on PAN
+        Count actual active/approved loans for this PAN from database
         
         Args:
             pan: PAN number
+            db: Database session
+            current_application_id: Current application ID to exclude
             
         Returns:
             Number of active loans
         """
-        # Extract digits from PAN
-        digits = ''.join(filter(str.isdigit, pan)) or '0000'
-        sum_digits = sum(int(d) for d in digits)
+        if not db:
+            return 0
         
-        # Normalize to 0-8 range
-        active_loans = sum_digits % 9
+        # Import here to avoid circular imports
+        from app.models.application import Application
         
-        # Test cases
-        if '9999' in pan:
-            active_loans = 7
-        if '1111' in pan:
-            active_loans = 1
+        # Count applications with ELIGIBLE status (approved loans) for this PAN
+        query = db.query(Application).filter(
+            Application.pan == pan,
+            Application.status == WorkflowState.ELIGIBLE
+        )
+        
+        # Exclude current application if provided
+        if current_application_id:
+            query = query.filter(Application.application_id != current_application_id)
+        
+        active_loans = query.count()
         
         return active_loans
     
@@ -123,13 +134,15 @@ class MockCibilService(CreditBureauServiceInterface):
             return "Poor"
         return "Very Poor"
     
-    async def get_credit_report(self, pan: str, monthly_income: float = 0) -> Dict[str, Any]:
+    async def get_credit_report(self, pan: str, monthly_income: float = 0, db: Optional[Session] = None, current_application_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Get credit report using rule-based logic
         
         Args:
             pan: PAN number
             monthly_income: Monthly income
+            db: Database session for counting real active loans
+            current_application_id: Current application to exclude from count
             
         Returns:
             Credit report result
@@ -137,9 +150,11 @@ class MockCibilService(CreditBureauServiceInterface):
         if not pan:
             raise ValueError("PAN number is required for credit check")
         
-        # Calculate credit score and active loans
+        # Calculate credit score
         credit_score = self._calculate_credit_score(pan, monthly_income)
-        active_loans = self._calculate_active_loans(pan)
+        
+        # Count REAL active loans from database
+        active_loans = self._count_active_loans_from_db(pan, db, current_application_id)
         
         # Determine if credit check passed
         passed = (credit_score >= LoanConfig.MIN_CREDIT_SCORE and 
@@ -159,15 +174,8 @@ class MockCibilService(CreditBureauServiceInterface):
                 "recent_enquiries": min(active_loans, 4),
                 "total_accounts": active_loans + 3,
                 "closed_accounts": max(0, active_loans - 2),
-                "verification_method": "Rule-Based Mock Service",
-                "rules": {
-                    "pan_pattern": pan[:5] if len(pan) >= 5 else pan,
-                    "income_considered": monthly_income > 0,
-                    "score_factors": {
-                        "pan_first_char": pan[0].upper() if pan else '',
-                        "pan_check_digit": pan[8] if len(pan) >= 9 else '',
-                    }
-                }
+                "verification_method": "Database + Rule-Based Service",
+                "data_source": "Real loan count from database"
             }
         }
 

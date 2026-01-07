@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApplicationStore } from '../store/applicationStore';
 import { useAuthStore } from '../store/authStore';
@@ -10,14 +10,20 @@ import { format } from 'date-fns';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { applications, loadApplication } = useApplicationStore();
+  const { applications, fetchApplications, fetchStats, stats, isLoading } = useApplicationStore();
   const { isAuthenticated, user, logout } = useAuthStore();
   
   const [statusFilter, setStatusFilter] = useState('all');
   const [eligibilityFilter, setEligibilityFilter] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState(null);
 
-  // Filter applications
+  // Fetch applications on component mount
+  useEffect(() => {
+    fetchApplications();
+    fetchStats();
+  }, []);
+
+  // Filter applications (client-side for now)
   const filteredApplications = applications.filter((app) => {
     // Status filter
     if (statusFilter !== 'all' && app.status !== statusFilter) {
@@ -39,11 +45,11 @@ export default function AdminDashboard() {
     return true;
   });
 
-  // Statistics
-  const stats = {
+  // Statistics from backend or calculate from local data
+  const displayStats = stats || {
     total: applications.length,
     eligible: applications.filter(a => a.status === WORKFLOW_STATES.ELIGIBLE).length,
-    notEligible: applications.filter(a => a.status === WORKFLOW_STATES.NOT_ELIGIBLE).length,
+    not_eligible: applications.filter(a => a.status === WORKFLOW_STATES.NOT_ELIGIBLE).length,
     pending: applications.filter(a => 
       ![WORKFLOW_STATES.ELIGIBLE, WORKFLOW_STATES.NOT_ELIGIBLE, 
         WORKFLOW_STATES.KYC_FAILED, WORKFLOW_STATES.CREDIT_REJECTED].includes(a.status)
@@ -106,23 +112,23 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="text-sm text-gray-500">Total Applications</div>
-            <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
+            <div className="text-3xl font-bold text-gray-900">{displayStats.total}</div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="text-sm text-gray-500">Eligible</div>
-            <div className="text-3xl font-bold text-green-600">{stats.eligible}</div>
+            <div className="text-3xl font-bold text-green-600">{displayStats.eligible}</div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="text-sm text-gray-500">Not Eligible</div>
-            <div className="text-3xl font-bold text-orange-600">{stats.notEligible}</div>
+            <div className="text-3xl font-bold text-orange-600">{displayStats.not_eligible || displayStats.notEligible || 0}</div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="text-sm text-gray-500">Pending</div>
-            <div className="text-3xl font-bold text-blue-600">{stats.pending}</div>
+            <div className="text-3xl font-bold text-blue-600">{displayStats.pending}</div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="text-sm text-gray-500">Failed</div>
-            <div className="text-3xl font-bold text-red-600">{stats.failed}</div>
+            <div className="text-3xl font-bold text-red-600">{displayStats.failed}</div>
           </div>
         </div>
 

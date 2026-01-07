@@ -20,7 +20,6 @@ export default function ApplicationPage() {
     initializeApplication,
     submitOnboarding,
     processKYC,
-    initiateCreditCheck,
     processCreditCheck,
     calculateEligibility,
     clearError,
@@ -71,7 +70,6 @@ export default function ApplicationPage() {
   };
 
   const handleCreditCheckInitiate = async () => {
-    initiateCreditCheck();
     await processCreditCheck();
   };
 

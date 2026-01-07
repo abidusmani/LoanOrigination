@@ -343,10 +343,12 @@ async def initiate_credit_check(
             db=db
         )
         
-        # Call credit service
+        # Call credit service with db session to count real active loans
         credit_result = await credit_service.get_credit_report(
             pan=application.pan,
-            monthly_income=application.monthly_income
+            monthly_income=application.monthly_income,
+            db=db,
+            current_application_id=application.application_id
         )
         
         # Store credit result

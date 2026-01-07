@@ -6,10 +6,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
-    LOGIN: `${API_BASE_URL}/auth/login`,
+    LOGIN: `${API_BASE_URL}/auth/login/json`,  // Use JSON login endpoint
     REGISTER: `${API_BASE_URL}/auth/register`,
     LOGOUT: `${API_BASE_URL}/auth/logout`,
-    REFRESH: `${API_BASE_URL}/auth/refresh`,
+    ME: `${API_BASE_URL}/auth/me`,
   },
 
   // Application endpoints
@@ -24,14 +24,12 @@ export const API_ENDPOINTS = {
 
   // KYC endpoints
   KYC: {
-    INITIATE: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/kyc/initiate`,
-    STATUS: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/kyc/status`,
+    INITIATE: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/kyc`,
   },
 
   // Credit check endpoints
   CREDIT: {
-    INITIATE: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/credit/initiate`,
-    STATUS: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/credit/status`,
+    INITIATE: (applicationId) => `${API_BASE_URL}/applications/${applicationId}/credit-check`,
   },
 
   // Eligibility endpoints
@@ -43,6 +41,7 @@ export const API_ENDPOINTS = {
   ADMIN: {
     APPLICATIONS: `${API_BASE_URL}/admin/applications`,
     STATS: `${API_BASE_URL}/admin/stats`,
+    JOURNEY: (applicationId) => `${API_BASE_URL}/admin/applications/${applicationId}/journey`,
   },
 };
 
