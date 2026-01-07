@@ -9,6 +9,36 @@ export const useAuthStore = create((set, get) => ({
   isLoading: false,
   error: null,
 
+  // Register new user
+  register: async (email, password, fullName) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.AUTH.REGISTER, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, full_name: fullName }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Registration failed');
+      }
+
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      set({
+        error: error.message || 'Registration failed',
+        isLoading: false,
+      });
+      return false;
+    }
+  },
+
   // Login with real API
   login: async (email, password) => {
     set({ isLoading: true, error: null });

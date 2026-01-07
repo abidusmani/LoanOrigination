@@ -64,7 +64,7 @@ class MockKYCService(KYCServiceInterface):
             score -= 20
         
         # Rule 3: PAN 4th character should match first letter of last name
-        pan_fourth_char = pan[3].upper() if len(pan) > 3 else ''
+        pan_fourth_char = pan[4].upper() if len(pan) > 4 else ''
         last_name = name_parts[-1] if name_parts else ''
         last_name_first_char = last_name[0].upper() if last_name else ''
         
