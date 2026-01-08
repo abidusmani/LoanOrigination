@@ -310,11 +310,11 @@ export default function ApplicationPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-auto">
+      {/* <footer className="bg-white border-t mt-auto">
         <div className="max-w-5xl mx-auto px-4 py-4 text-center text-sm text-gray-500">
           © 2026 LoanOS - Mini Loan Origination System
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }

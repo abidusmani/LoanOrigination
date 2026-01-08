@@ -24,7 +24,8 @@ DRAFT → KYC_PENDING → KYC_COMPLETED → CREDIT_CHECK_PENDING → CREDIT_CHEC
 
 Key rules:
 
-- KYC name match score ≥ 80 → KYC_COMPLETED; otherwise → KYC_FAILED
+-PAN 5th letter must be eqaul to 1st letter of Second name
+- KYC name match score ≥ 80 → KYC_COMPLETED; otherwise → KYC_FAILED 
 - Credit score ≥ 650 AND active loans ≤ 5 → CREDIT_CHECK_COMPLETED; otherwise → CREDIT_REJECTED
 - Eligibility uses fixed interest (12% p.a.) and tenure (36 months) with income-based EMI caps
 

@@ -105,21 +105,21 @@ export default function AdminDashboard() {
               onClick={() => navigate('/')}
               className="text-sm text-gray-600 hover:text-gray-900 flex items-center space-x-1"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span>Applications</span>
+              <span>Applications</span> */}
             </button>
             
             {/* Admin User Info */}
             <div className="flex items-center space-x-2 text-sm border-l pl-4">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              {/* <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                 <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-              </div>
+              </div> */}
               <div>
-                <span className="text-gray-700 font-medium">{user?.name || user?.email}</span>
+                {/* <span className="text-gray-700 font-medium">{user?.name || user?.email}</span> */}
                 <span className="ml-2 px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded-full">Admin</span>
               </div>
             </div>
