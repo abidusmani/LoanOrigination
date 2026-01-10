@@ -12,7 +12,7 @@ from app.db import get_db
 from app.models.application import Application
 from app.schemas.application import ApplicationResponse, PaginatedResponse, ApplicationListResponse
 from app.core.constants import WorkflowState
-from app.core.security import get_current_user_optional
+from app.core.security import get_current_user
 
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/admin", tags=["Admin"])
 @router.get("/stats")
 async def get_dashboard_stats(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Get dashboard statistics
@@ -90,7 +90,7 @@ async def list_all_applications(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     List all applications for admin view
@@ -158,7 +158,7 @@ async def list_all_applications(
 async def get_application_detail(
     application_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Get detailed application information including full journey log
@@ -180,7 +180,7 @@ async def get_application_detail(
 async def get_application_journey(
     application_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Get application journey log with all API responses

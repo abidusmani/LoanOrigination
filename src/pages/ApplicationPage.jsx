@@ -6,6 +6,7 @@ import KYCStep from '../components/application/KYCStep';
 import CreditCheckStep from '../components/application/CreditCheckStep';
 import EligibilityResult from '../components/application/EligibilityResult';
 import ErrorMessage from '../components/common/ErrorMessage';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useApplicationStore } from '../store/applicationStore';
 import { useAuthStore } from '../store/authStore';
 import { WORKFLOW_STATES, TERMINAL_STATES } from '../constants/workflowStates';
@@ -13,6 +14,7 @@ import { WORKFLOW_STATES, TERMINAL_STATES } from '../constants/workflowStates';
 export default function ApplicationPage() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
+  const [isInitializing, setIsInitializing] = useState(true);
   
   const {
     currentApplication,
@@ -34,9 +36,12 @@ export default function ApplicationPage() {
   };
 
   useEffect(() => {
-    if (!currentApplication) {
-      initializeApplication();
-    }
+    const init = async () => {
+      setIsInitializing(true);
+      await initializeApplication();
+      setIsInitializing(false);
+    };
+    init();
   }, []);
 
   useEffect(() => {
@@ -84,7 +89,33 @@ export default function ApplicationPage() {
   };
 
   const handleStartNewApplication = () => {
-    initializeApplication();
+    // Clear current application and create fresh draft
+    const { clearCurrentApplication } = useApplicationStore.getState();
+    clearCurrentApplication();
+    
+    // Create new local draft
+    const newApp = {
+      id: null,
+      status: WORKFLOW_STATES.DRAFT,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      fullName: '',
+      mobile: '',
+      pan: '',
+      dob: '',
+      employmentType: '',
+      monthlyIncome: '',
+      loanAmount: '',
+      kycResult: null,
+      kycCompletedAt: null,
+      creditResult: null,
+      creditCompletedAt: null,
+      eligibilityResult: null,
+      eligibilityCheckedAt: null,
+      journeyLog: [],
+    };
+    
+    useApplicationStore.setState({ currentApplication: newApp, error: null });
     setActiveStep(0);
   };
 
@@ -265,14 +296,22 @@ export default function ApplicationPage() {
         </div>
       </header>
 
+      {/* Loading State */}
+      {isInitializing && (
+        <div className="max-w-5xl mx-auto px-4 py-16 flex flex-col items-center justify-center">
+          <LoadingSpinner size="lg" text="Loading your application..." />
+        </div>
+      )}
+
       {/* Main Content */}
+      {!isInitializing && (
       <main className="max-w-5xl mx-auto px-4 py-8">
         {/* Application ID Display */}
         {currentApplication && (
           <div className="mb-6 flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">Application ID</p>
-              <p className="font-mono text-sm font-medium text-gray-700">{currentApplication.id}</p>
+              <p className="font-mono text-sm font-medium text-gray-700">{currentApplication.id || 'Draft (not saved)'}</p>
             </div>
             <button
               onClick={handleStartNewApplication}
@@ -308,6 +347,7 @@ export default function ApplicationPage() {
         {/* Next Step Button */}
         {renderNextButton()}
       </main>
+      )}
 
       {/* Footer */}
       {/* <footer className="bg-white border-t mt-auto">

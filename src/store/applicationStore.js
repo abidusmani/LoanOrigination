@@ -81,6 +81,9 @@ const mapEligibilityResult = (eligibilityResult) => {
     maxAllowedEMI: eligibilityResult.max_allowed_emi,
     interestRate: eligibilityResult.interest_rate,
     tenure: eligibilityResult.tenure,
+    creditScore: eligibilityResult.credit_score,
+    monthlyIncome: eligibilityResult.monthly_income,
+    employmentType: eligibilityResult.employment_type,
     totalPayable: eligibilityResult.total_payable,
     totalInterest: eligibilityResult.total_interest,
     reason: eligibilityResult.reason,
@@ -140,10 +143,61 @@ export const useApplicationStore = create((set, get) => ({
   // Pagination
   pagination: null,
 
-  // Initialize a new application (just creates local state, not saved to backend yet)
-  initializeApplication: () => {
+  // Fetch latest in-progress application from backend
+  fetchLatestApplication: async () => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const response = await fetchAPI(`${API_ENDPOINTS.APPLICATIONS.GET_ALL}?page=1&page_size=1`);
+      
+      if (response.items && response.items.length > 0) {
+        const latestApp = response.items[0];
+        // Check if it's not in a terminal state (user can continue)
+        const terminalStates = ['ELIGIBLE', 'NOT_ELIGIBLE', 'KYC_FAILED', 'CREDIT_REJECTED'];
+        
+        if (!terminalStates.includes(latestApp.status)) {
+          const application = mapApplicationFromBackend(latestApp);
+          set({ currentApplication: application, isLoading: false });
+          return application;
+        }
+      }
+      
+      // No in-progress application found, return null
+      set({ isLoading: false });
+      return null;
+    } catch (error) {
+      set({ isLoading: false, error: error.message });
+      return null;
+    }
+  },
+
+  // Initialize application - first try to load existing, then create new if none
+  initializeApplication: async () => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // First, try to fetch latest in-progress application
+      const response = await fetchAPI(`${API_ENDPOINTS.APPLICATIONS.GET_ALL}?page=1&page_size=1`);
+      
+      if (response.items && response.items.length > 0) {
+        const latestApp = response.items[0];
+        const terminalStates = ['ELIGIBLE', 'NOT_ELIGIBLE', 'KYC_FAILED', 'CREDIT_REJECTED'];
+        
+        // If latest app is not in terminal state, resume it
+        if (!terminalStates.includes(latestApp.status)) {
+          const application = mapApplicationFromBackend(latestApp);
+          set({ currentApplication: application, isLoading: false });
+          return application;
+        }
+      }
+    } catch (error) {
+      // If fetch fails (e.g., no applications yet), continue to create new
+      console.log('No existing application found, creating new one');
+    }
+    
+    // No in-progress application, create new local draft
     const newApp = {
-      id: null, // Will be set by backend
+      id: null,
       status: WORKFLOW_STATES.DRAFT,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -170,6 +224,7 @@ export const useApplicationStore = create((set, get) => ({
     
     set({
       currentApplication: newApp,
+      isLoading: false,
       error: null,
     });
     

@@ -20,7 +20,7 @@ from app.schemas.application import (
     PaginatedResponse,
 )
 from app.core.constants import WorkflowState, LoanConfig
-from app.core.security import get_current_user_optional
+from app.core.security import get_current_user
 from app.services import (
     get_kyc_service,
     get_credit_service,
@@ -46,7 +46,7 @@ def generate_application_id() -> str:
 async def create_application(
     app_data: ApplicationCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Create a new loan application (Customer Onboarding)
@@ -114,7 +114,7 @@ async def list_applications(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(10, ge=1, le=100, description="Items per page"),
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     List all applications with optional filters
@@ -167,7 +167,7 @@ async def list_applications(
 async def get_application(
     application_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Get application by ID
@@ -190,7 +190,7 @@ async def update_application(
     application_id: str,
     app_data: ApplicationUpdate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Update application details
@@ -232,7 +232,7 @@ async def initiate_kyc(
     db: Session = Depends(get_db),
     kyc_service: KYCServiceInterface = Depends(get_kyc_service),
     workflow: WorkflowEngine = Depends(get_workflow_engine),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Initiate KYC verification for an application
@@ -307,7 +307,7 @@ async def initiate_credit_check(
     db: Session = Depends(get_db),
     credit_service: CreditBureauServiceInterface = Depends(get_credit_service),
     workflow: WorkflowEngine = Depends(get_workflow_engine),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Initiate credit bureau check for an application
@@ -407,7 +407,7 @@ async def calculate_eligibility(
     db: Session = Depends(get_db),
     eligibility_engine: EligibilityEngineInterface = Depends(get_eligibility_engine),
     workflow: WorkflowEngine = Depends(get_workflow_engine),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Calculate loan eligibility for an application
@@ -488,7 +488,7 @@ async def calculate_eligibility(
 async def delete_application(
     application_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user_optional),
+    current_user: dict = Depends(get_current_user),
 ):
     """
     Delete an application (Admin only)
