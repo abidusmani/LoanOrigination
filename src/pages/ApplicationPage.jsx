@@ -20,7 +20,9 @@ export default function ApplicationPage() {
     currentApplication,
     isLoading,
     error,
+    stats,
     initializeApplication,
+    fetchStats,
     submitOnboarding,
     processKYC,
     processCreditCheck,
@@ -39,6 +41,7 @@ export default function ApplicationPage() {
     const init = async () => {
       setIsInitializing(true);
       await initializeApplication();
+      await fetchStats();
       setIsInitializing(false);
     };
     init();
@@ -306,6 +309,32 @@ export default function ApplicationPage() {
       {/* Main Content */}
       {!isInitializing && (
       <main className="max-w-5xl mx-auto px-4 py-8">
+        {/* Stats Cards */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <div className="bg-white rounded-lg shadow-sm border p-3">
+              <div className="text-xs text-gray-500">Total Applications</div>
+              <div className="text-2xl font-bold text-gray-900">{stats.total || 0}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border p-3">
+              <div className="text-xs text-gray-500">Eligible</div>
+              <div className="text-2xl font-bold text-green-600">{stats.eligible || 0}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border p-3">
+              <div className="text-xs text-gray-500">Not Eligible</div>
+              <div className="text-2xl font-bold text-orange-600">{stats.not_eligible || 0}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border p-3">
+              <div className="text-xs text-gray-500">Pending</div>
+              <div className="text-2xl font-bold text-blue-600">{stats.pending || 0}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border p-3">
+              <div className="text-xs text-gray-500">Failed</div>
+              <div className="text-2xl font-bold text-red-600">{stats.failed || 0}</div>
+            </div>
+          </div>
+        )}
+
         {/* Application ID Display */}
         {currentApplication && (
           <div className="mb-6 flex items-center justify-between">

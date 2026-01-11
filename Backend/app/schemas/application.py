@@ -147,7 +147,14 @@ class ApplicationListResponse(BaseModel):
     status: WorkflowState
     full_name: Optional[str] = None
     mobile: Optional[str] = None
+    pan: Optional[str] = None
+    dob: Optional[date] = None
+    employment_type: Optional[EmploymentType] = None
+    monthly_income: Optional[float] = None
     loan_amount: Optional[float] = None
+    kyc_result: Optional[dict] = None
+    credit_result: Optional[dict] = None
+    eligibility_result: Optional[dict] = None
     created_at: datetime
 
     class Config:

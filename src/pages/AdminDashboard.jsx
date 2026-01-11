@@ -438,30 +438,6 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               )}
-
-              {/* Journey Log */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wide">
-                  Application Journey
-                </h3>
-                <div className="space-y-3">
-                  {selectedApplication.journeyLog.map((log, index) => (
-                    <div 
-                      key={index} 
-                      className="flex items-start space-x-3 text-sm border-l-2 border-blue-200 pl-4 pb-3"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium text-gray-900">{log.action}</span>
-                          <StatusBadge status={log.status} size="sm" />
-                        </div>
-                        <p className="text-gray-600 mt-1">{log.details}</p>
-                        <p className="text-gray-400 text-xs mt-1">{formatDate(log.timestamp)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </div>
